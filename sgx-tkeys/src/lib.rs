@@ -83,7 +83,7 @@ impl SgxSecretBuilder {
         }
     }
 
-    /// Generate a new ['SgxSecret'] deterministically via SGX using metadata
+    /// Generate a new [SgxSecret] deterministically via SGX using metadata
     /// supplied to the current builder.
     ///
     /// **NB:** The current implementation panics when the requested secret is
