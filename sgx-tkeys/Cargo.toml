@@ -1,0 +1,14 @@
+[package]
+name = "sgx-tkeys"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+sgx_types = { git="https://github.com/apache/incubator-teaclave-sgx-sdk", rev="27bd225ae6dbcd1d0a6d4d9590acc4d73c5195c2" }
+
+bitflags = { version = "1.3.2", default-features = false }
+hkdf = { version = "0.12.3", default-features = false }
+zeroize = { version = "1.5.7", default-features = false, features = ["derive"] }
+sha2 = { version = "0.10.6", default-features = false }
