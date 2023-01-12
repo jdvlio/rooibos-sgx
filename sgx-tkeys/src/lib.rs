@@ -115,7 +115,7 @@ impl SgxSecretBuilder {
         unsafe { sgx_get_key(&key_request, &mut ikm) };
         let kdf = HkdfSha256::new(Some(&self.key_id), &ikm);
         kdf.expand(&[], &mut okm)
-            .expect("Invalid length: requested");
+            .expect("Invalid length: requested key is too long");
         SgxSecret(okm)
     }
 }
