@@ -56,7 +56,8 @@ fn hash_id_when_too_long(key_id: &[u8]) -> [u8; 32] {
 type HkdfSha256 = Hkdf<Sha256>;
 
 /// Representation of a secret derived using the `sgx_get_key` API from the
-/// Intel SDK.
+/// Intel SDK.  The underlying bytes contain at most 128 bits (16 bytes) of
+/// entropy.
 #[must_use]
 #[derive(Debug, Clone, Zeroize, ZeroizeOnDrop)]
 pub struct SgxSecret<const KEY_SIZE: usize = 16>([u8; KEY_SIZE]);
@@ -84,7 +85,8 @@ impl SgxSecretBuilder {
     }
 
     /// Generate a new [SgxSecret] deterministically via SGX using metadata
-    /// supplied to the current builder.
+    /// supplied to the current builder.  Generated secrets have at most 128
+    /// bits of entropy.
     ///
     /// **NB:** The current implementation panics when the requested secret is
     /// more than 255 times the length of a SHA256 digest.
