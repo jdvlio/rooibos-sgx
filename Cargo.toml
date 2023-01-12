@@ -9,3 +9,4 @@ edition = "2021"
 members = ["sgx-tkeys"]
 
 [dependencies]
+sgx-tkeys = { path="./sgx-tkeys" }
