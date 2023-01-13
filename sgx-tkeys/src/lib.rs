@@ -51,7 +51,7 @@ impl From<u16> for SgxKeyPolicy {
 /// Builder type used to configure SGX's key derivation.
 #[must_use]
 #[derive(Debug, Default, Eq, PartialEq, Clone, Copy)]
-pub struct SgxSecretBuilder {
+pub struct SgxSecretBuilder<const KEY_SIZE: usize = 16> {
     key_id: [u8; 32],
     policy: SgxKeyPolicy,
 }
@@ -76,7 +76,7 @@ type HkdfSha256 = Hkdf<Sha256>;
 #[derive(Debug, Clone, Zeroize, ZeroizeOnDrop)]
 pub struct SgxSecret<const KEY_SIZE: usize = 16>([u8; KEY_SIZE]);
 
-impl SgxSecretBuilder {
+impl<const KEY_SIZE: usize> SgxSecretBuilder<KEY_SIZE> {
     /// Instanstiate a new builder in its default configuration.
     pub fn new() -> Self {
         Self::default()
@@ -104,7 +104,7 @@ impl SgxSecretBuilder {
     ///
     /// **NB:** The current implementation panics when the requested secret is
     /// more than 255 times the length of a SHA256 digest.
-    pub fn build<const KEY_SIZE: usize>(&self) -> SgxSecret<KEY_SIZE> {
+    pub fn build(&self) -> SgxSecret<KEY_SIZE> {
         // At present the static_assertions crate does not support `const`
         // generics:
         //
