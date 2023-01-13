@@ -135,3 +135,10 @@ impl<const KEY_SIZE: usize> SgxSecretBuilder<KEY_SIZE> {
         SgxSecret(okm)
     }
 }
+
+impl AsRef<[u8]> for SgxSecret {
+    fn as_ref(&self) -> &[u8] {
+        let SgxSecret(bytes) = self;
+        bytes.as_slice()
+    }
+}
