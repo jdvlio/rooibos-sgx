@@ -16,8 +16,6 @@
 #![no_std]
 #![feature(error_in_core)]
 
-use core::slice::SlicePattern;
-
 use bitflags::bitflags;
 use hkdf::Hkdf;
 use sgx_types::metadata::*;
@@ -65,7 +63,7 @@ fn hash_id_when_too_long(key_id: &[u8]) -> [u8; 32] {
         return hasher.finalize().into();
     }
     let mut buffer = <[u8; SGX_KEYID_SIZE]>::default();
-    buffer.copy_from_slice(key_id);
+    buffer[0..key_id.len()].copy_from_slice(key_id);
     buffer
 }
 
@@ -131,9 +129,13 @@ impl<const KEY_SIZE: usize> SgxSecretBuilder<KEY_SIZE> {
         let mut ikm = <[u8; 16]>::default();
         let mut okm = [0u8; KEY_SIZE];
         unsafe { sgx_get_key(&key_request, &mut ikm) };
-        let kdf = HkdfSha256::new(Some(&self.key_id), &ikm);
-        kdf.expand(&[], &mut okm)
-            .expect("Invalid length: requested key is too long");
+        if KEY_SIZE > 16 {
+            let kdf = HkdfSha256::new(Some(&self.key_id), &ikm);
+            kdf.expand(&[], &mut okm)
+                .expect("Invalid length: requested key is too long");
+        } else {
+            okm.copy_from_slice(&ikm[0..KEY_SIZE])
+        }
         SgxSecret(okm)
     }
 }
