@@ -16,6 +16,8 @@
 #![no_std]
 #![feature(error_in_core)]
 
+use core::slice::SlicePattern;
+
 use bitflags::bitflags;
 use hkdf::Hkdf;
 use sgx_types::metadata::*;
@@ -136,7 +138,7 @@ impl<const KEY_SIZE: usize> SgxSecretBuilder<KEY_SIZE> {
     }
 }
 
-impl AsRef<[u8]> for SgxSecret {
+impl<const KEY_SIZE: usize> AsRef<[u8]> for SgxSecret<KEY_SIZE> {
     fn as_ref(&self) -> &[u8] {
         let SgxSecret(bytes) = self;
         bytes.as_slice()
