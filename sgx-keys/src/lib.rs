@@ -130,7 +130,7 @@ impl<const KEY_SIZE: usize> SgxSecretBuilder<KEY_SIZE> {
         let mut okm = [0u8; KEY_SIZE];
         unsafe { sgx_get_key(&key_request, &mut ikm) };
         if KEY_SIZE > 16 {
-            let kdf = HkdfSha256::new(Some(&self.key_id), &ikm);
+            let kdf = HkdfSha256::new(None, &ikm);
             kdf.expand(&[], &mut okm)
                 .expect("Invalid length: requested key is too long");
         } else {
