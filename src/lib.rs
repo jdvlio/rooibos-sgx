@@ -15,4 +15,4 @@
 #![feature(error_in_core)]
 
 #[doc(inline)]
-pub use sgx_tkeys;
+pub use sgx_keys as keys;

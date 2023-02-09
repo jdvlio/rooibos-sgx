@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [workspace]
-members = ["sgx-tkeys"]
+members = ["sgx-keys"]
 
 [dependencies]
-sgx-tkeys = { path="./sgx-tkeys" }
+sgx-keys = { path="./sgx-keys" }
