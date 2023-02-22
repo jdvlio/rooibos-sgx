@@ -17,7 +17,7 @@
 #![feature(error_in_core)]
 
 use bitflags::bitflags;
-use hkdf::Hkdf;
+use hkdf::SimpleHkdf;
 use sgx_types::metadata::*;
 use sgx_types::*;
 use sha2::{Digest, Sha256};
@@ -67,7 +67,7 @@ fn hash_id_when_too_long(key_id: &[u8]) -> [u8; 32] {
     buffer
 }
 
-type HkdfSha256 = Hkdf<Sha256>;
+type HkdfBlake3 = SimpleHkdf<blake3::Hasher>;
 
 /// Representation of a secret derived using the `sgx_get_key` API from the
 /// Intel SDK.  The underlying bytes contain at most 128 bits (16 bytes) of
@@ -130,7 +130,7 @@ impl<const KEY_SIZE: usize> SgxSecretBuilder<KEY_SIZE> {
         let mut okm = [0u8; KEY_SIZE];
         unsafe { sgx_get_key(&key_request, &mut ikm) };
         if KEY_SIZE > 16 {
-            let kdf = HkdfSha256::new(None, &ikm);
+            let kdf = HkdfBlake3::new(None, &ikm);
             kdf.expand(&[], &mut okm)
                 .expect("Invalid length: requested key is too long");
         } else {
