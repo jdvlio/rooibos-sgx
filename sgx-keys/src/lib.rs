@@ -103,7 +103,7 @@ impl<const KEY_SIZE: usize> SgxSecretBuilder<KEY_SIZE> {
     /// bits of entropy.
     ///
     /// **NB:** The current implementation panics when the requested secret is
-    /// more than 255 times the length of a SHA256 digest.
+    /// more than 255 times the length of a BLAKE3 digest.
     pub fn build(&self) -> SgxSecret<KEY_SIZE> {
         // At present the static_assertions crate does not support `const`
         // generics:
