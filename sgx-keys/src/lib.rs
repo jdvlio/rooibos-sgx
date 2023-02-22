@@ -20,7 +20,6 @@ use bitflags::bitflags;
 use hkdf::SimpleHkdf;
 use sgx_types::metadata::*;
 use sgx_types::*;
-use sha2::{Digest, Sha256};
 use zeroize::{Zeroize, ZeroizeOnDrop};
 
 bitflags! {
@@ -58,7 +57,7 @@ pub struct SgxSecretBuilder<const KEY_SIZE: usize = 16> {
 
 fn hash_id_when_too_long(key_id: &[u8]) -> [u8; 32] {
     if key_id.len() > SGX_KEYID_SIZE {
-        let mut hasher = Sha256::new();
+        let mut hasher = blake3::Hasher::new();
         hasher.update(key_id);
         return hasher.finalize().into();
     }
@@ -111,7 +110,7 @@ impl<const KEY_SIZE: usize> SgxSecretBuilder<KEY_SIZE> {
         // https://github.com/nvzqz/static-assertions-rs/issues/40.
         //
         // TODO: find away to check this length constraint at compile time.
-        assert!(KEY_SIZE <= 255 * Sha256::output_size());
+        assert!(KEY_SIZE <= 255 * 32);
         let report_body = unsafe { *sgx_self_report() }.body;
         let key_request = sgx_key_request_t {
             key_name: SGX_KEYSELECT_SEAL,
